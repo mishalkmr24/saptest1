@@ -1,0 +1,107 @@
+import pygame
+pygame.init()
+
+#create the screen
+screen = pygame.display.set_mode((500,550))
+
+#title
+pygame.display.set_caption("Red Green Yellow")
+
+#background
+background = pygame.image.load("download (8).jpg")
+background = pygame.transform.scale(background, (500,550)) #fit the background
+
+#player
+playerImg = pygame.image.load('car.png')
+player_rect = playerImg.get_rect()
+player_rect.inflate_ip(-40, -0)
+player_rect.midbottom = (250,550)
+
+#enemmy
+enemyImg = pygame.image.load('enemy.png')
+enemy_rect = enemyImg.get_rect()
+enemy_rect.inflate_ip(-40, -40)
+enemy_rect.midtop = (50,20)
+
+
+
+#road movement
+road1 = 0
+road2 = -550
+speed = 10
+
+#refresh rate
+clock = pygame.time.Clock()
+
+#player movement
+playerchange_x = 0
+def player():
+    screen.blit(playerImg,player_rect)
+
+#enemy movement
+enemy_speed = 5
+def enemy():
+    screen.blit(enemyImg,enemy_rect)
+
+running = True
+
+while running:
+    clock.tick(60)
+    screen.fill((0,0,0))  #screen color 
+
+
+    road1 += speed
+    road2 += speed
+    if road1 > 550:
+        road1 = -550
+    if road2 > 550:
+        road2 = -550
+    
+
+    screen.blit(background, (0,road1))
+    screen.blit(background, (0,road2))
+
+    player()
+
+    
+    
+    enemy_rect.y += enemy_speed
+    enemy()
+    if enemy_rect.y > 550:
+        enemy_rect.y = -550
+    
+  
+   
+    for event in pygame.event.get():
+
+      
+
+        if event.type == pygame.QUIT:
+            running = False
+        
+        if event.type == pygame.KEYDOWN:
+            print("Key is pressed")
+            if event.key == pygame.K_LEFT:
+                print('Left key is pressed')
+                playerchange_x = -4
+                
+            if event.key == pygame.K_RIGHT :
+               playerchange_x = 4
+               print('Right key is pressed')
+        
+        if event.type == pygame.KEYUP:
+              if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                 print('Key is released')
+                 playerchange_x = 0
+    if player_rect.colliderect(enemy_rect):
+            running= False
+        
+    
+    player_rect.x += playerchange_x
+    if player_rect.x > 400 :
+        player_rect.x -= 1
+    if player_rect.x <-29:
+        player_rect.x += 1
+
+
+    pygame.display.update()
